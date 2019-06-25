@@ -31,8 +31,7 @@ public class ConcourseServerConfig {
 
     @Value("${concourse.port}")
     private int concourseServerPort;
-    
-    
+
     @Value("${server.debug}")
     private String debugFlag;
 
@@ -43,8 +42,8 @@ public class ConcourseServerConfig {
 
     @Bean
     public ConcourseServer startConcourseServer() throws TTransportException {
-    	
-    	System.out.println("Server Debug Flag: " + debugFlag);
+
+        System.out.println("Server Debug Flag: " + debugFlag);
 
         ConcourseServer server = ConcourseServer.create();
 
