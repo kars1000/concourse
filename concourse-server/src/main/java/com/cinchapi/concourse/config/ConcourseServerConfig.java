@@ -32,61 +32,64 @@ import com.cinchapi.concourse.shell.CommandLine;
 @SpringBootApplication
 public class ConcourseServerConfig {
 
-	@Value("${concourse.host}")
-	private String concourseServerHost;
+    @Value("${concourse.host}")
+    private String concourseServerHost;
 
-	@Value("${concourse.port}")
-	private int concourseServerPort;
+    @Value("${concourse.port}")
+    private int concourseServerPort;
 
-	@Value("${server.debug}")
-	private String debugFlag;
+    @Value("${server.debug}")
+    private String debugFlag;
 
-	private ConcourseServer concourseServer;
+    private ConcourseServer concourseServer;
 
-	public static String DATABASE_DIRECTORY = System.getProperty("user.home") + File.separator + "concourse"
-			+ File.separator + "db";
+    public static String DATABASE_DIRECTORY = System.getProperty("user.home")
+            + File.separator + "concourse" + File.separator + "db";
 
-	/**
-	 * The absolute path to the directory where the Buffer data is stored. For
-	 * optimal write performance, the Buffer should be placed on a separate disk
-	 * partition (ideally a separate physical device) from the database_directory.
-	 */
-	public static String BUFFER_DIRECTORY = System.getProperty("user.home") + File.separator + "concourse"
-			+ File.separator + "buffer";
+    /**
+     * The absolute path to the directory where the Buffer data is stored. For
+     * optimal write performance, the Buffer should be placed on a separate disk
+     * partition (ideally a separate physical device) from the
+     * database_directory.
+     */
+    public static String BUFFER_DIRECTORY = System.getProperty("user.home")
+            + File.separator + "concourse" + File.separator + "buffer";
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(ConcourseServerConfig.class, args);
-	}
+        SpringApplication.run(ConcourseServerConfig.class, args);
+    }
 
-	@Bean
-	public ConcourseServer concourseServer() throws TTransportException {
+    @Bean
+    public ConcourseServer concourseServer() throws TTransportException {
 
-		System.out.println("Server Debug Flag: " + debugFlag);
+        System.out.println("Server Debug Flag: " + debugFlag);
 
-		return concourseServer;
+        return concourseServer;
 
-	}
+    }
 
-	@PostConstruct
-	public void init() throws TTransportException {
+    @PostConstruct
+    public void init() throws TTransportException {
 
-		this.concourseServer = ConcourseServer.create(concourseServerPort, BUFFER_DIRECTORY, DATABASE_DIRECTORY);
+        this.concourseServer = ConcourseServer.create(concourseServerPort,
+                BUFFER_DIRECTORY, DATABASE_DIRECTORY);
 
-		new Thread(() -> {
+        new Thread(() -> {
 
-			try {
-				CommandLine.displayWelcomeBanner();
-				System.out.println("System ID: " + GlobalState.SYSTEM_ID);
-				this.concourseServer.start();
-			} catch (TTransportException e) {
-				e.printStackTrace();
-				System.exit(-1);
-			}
+            try {
+                CommandLine.displayWelcomeBanner();
+                System.out.println("System ID: " + GlobalState.SYSTEM_ID);
+                this.concourseServer.start();
+            }
+            catch (TTransportException e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
 
-		}, "main").start();
+        }, "main").start();
 
-		System.out.println("System is now up and running");
-	}
+        System.out.println("System is now up and running");
+    }
 
 }
